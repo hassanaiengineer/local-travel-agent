@@ -84,14 +84,36 @@ export function ChatPageClient() {
           <div className="h-[38svh] space-y-2 overflow-y-auto p-2.5 lg:h-[calc(100%-65px)]">
             {loading && !latestAssistant?.result && <LoadingSkeleton />}
             {!latestAssistant?.result && !loading && (
-              <div className="flex h-full items-center justify-center rounded-2xl border border-dashed border-zinc-200/80 bg-white/44 p-6 text-center">
-                <div>
-                  <div className="mx-auto mb-3 flex h-9 w-9 items-center justify-center rounded-full bg-zinc-100 text-zinc-500">
+              <div className="h-full rounded-2xl border border-dashed border-zinc-200/80 bg-white/50 p-4">
+                <div className="flex h-full flex-col justify-between">
+                  <div>
+                    <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-full bg-zinc-100 text-zinc-500">
+                      <Bot className="h-4 w-4" />
+                    </div>
+                    <p className="text-[13px] font-medium text-zinc-900">Your options will appear here</p>
+                    <p className="mt-1 text-[12px] font-normal leading-5 text-zinc-600">
+                      Compare departure times, duration, fare, and AI recommendation in one place.
+                    </p>
+                  </div>
+
+                  <div className="mt-5 space-y-2">
+                    {["Best value", "Cheapest fare", "Fastest route"].map((item) => (
+                      <div key={item} className="flex items-center justify-between rounded-xl bg-white/80 px-3 py-2 text-[12px] text-zinc-600">
+                        <span>{item}</span>
+                        <span className="h-1.5 w-10 rounded-full bg-zinc-200" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+            {loading && latestAssistant?.result && (
+              <div className="rounded-2xl border border-zinc-200/70 bg-white/70 p-4">
+                <div className="flex items-center gap-3 text-[12px] text-zinc-500">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-100 text-zinc-500">
                     <Bot className="h-4 w-4" />
                   </div>
-                  <p className="text-[13px] font-normal leading-6 text-zinc-500">
-                    Ask for a route to see fares, timings, and recommendations.
-                  </p>
+                  Updating live options...
                 </div>
               </div>
             )}

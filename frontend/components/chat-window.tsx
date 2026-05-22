@@ -1,18 +1,46 @@
-import { Bot, UserRound } from "lucide-react";
+import { Bot, Clock3, Route, UserRound, WalletCards } from "lucide-react";
 
 import { ChatMessage } from "@/lib/types";
+
+const EMPTY_SUGGESTIONS = [
+  { label: "Route", text: "Lahore to Multan tomorrow", Icon: Route },
+  { label: "Budget", text: "show cheapest option", Icon: WalletCards },
+  { label: "Time", text: "morning buses only", Icon: Clock3 },
+];
 
 export function ChatWindow({ messages, loading }: { messages: ChatMessage[]; loading?: boolean }) {
   return (
     <div className="space-y-3.5">
       {messages.length === 0 && (
-        <div className="mx-auto max-w-md py-8 text-center fade-in-up">
-          <div className="mx-auto mb-3 flex h-9 w-9 items-center justify-center rounded-full bg-zinc-900 text-white shadow-sm">
-            <Bot className="h-4 w-4" />
+        <div className="mx-auto w-full max-w-2xl py-6 fade-in-up">
+          <div className="mb-5 flex items-start gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-zinc-900 text-white shadow-sm">
+              <Bot className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="text-[15px] font-medium text-zinc-900">Where are we going?</p>
+              <p className="mt-1 max-w-md text-[13px] font-normal leading-6 text-zinc-600">
+                Safar ab AI ke sath. Ask in English, Urdu, or Roman Urdu and I will find practical bus options.
+              </p>
+            </div>
           </div>
-          <p className="text-[13px] font-normal leading-6 text-zinc-500">
-            Safar ab AI ke sath. Bas message karo aur bus dhoondo.
-          </p>
+
+          <div className="grid gap-2 md:grid-cols-3">
+            {EMPTY_SUGGESTIONS.map(({ label, text, Icon }) => (
+              <div
+                key={label}
+                className="flex items-center gap-3 rounded-2xl border border-zinc-200/70 bg-white/72 p-2.5 shadow-sm md:block md:p-3"
+              >
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-zinc-600 md:mb-2">
+                  <Icon className="h-3.5 w-3.5" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-normal text-zinc-500">{label}</p>
+                  <p className="text-[12px] font-normal leading-5 text-zinc-700 md:mt-1">{text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --bg: #f8f7f2;
+  --bg: #f7f6f0;
   --card: #ffffff;
   --text: #27272a;
   --muted: #71717a;
   --accent: #14746a;
   --accent-2: #a16207;
   --hairline: rgba(39, 39, 42, 0.08);
-  --font-body: Aptos, "SF Pro Text", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Noto Sans", "Segoe UI", -apple-system, BlinkMacSystemFont, ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
@@ -23,6 +23,7 @@ body {
   font-family: var(--font-body);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   letter-spacing: 0;
+  text-rendering: optimizeLegibility;
 }
 
 * {
@@ -36,8 +37,8 @@ body {
 @layer utilities {
   .soft-surface {
     border: 1px solid var(--hairline);
-    background: rgba(255, 255, 255, 0.72);
-    box-shadow: 0 20px 70px rgba(39, 39, 42, 0.08);
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: 0 18px 50px rgba(39, 39, 42, 0.07);
     backdrop-filter: blur(20px);
   }
 
@@ -46,14 +47,14 @@ body {
   }
 
   .fade-in-up {
-    animation: fade-in-up 520ms ease both;
+    animation: fade-in-up 260ms ease both;
   }
 }
 
 @keyframes fade-in-up {
   from {
-    opacity: 0;
-    transform: translateY(8px);
+    opacity: 0.82;
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
