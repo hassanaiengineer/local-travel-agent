@@ -3,22 +3,26 @@
 @tailwind utilities;
 
 :root {
-  --bg: #f7f7f2;
+  --bg: #f8f7f2;
   --card: #ffffff;
-  --text: #18211f;
-  --muted: #69716e;
-  --accent: #0f766e;
-  --accent-2: #b45309;
+  --text: #27272a;
+  --muted: #71717a;
+  --accent: #14746a;
+  --accent-2: #a16207;
+  --hairline: rgba(39, 39, 42, 0.08);
+  --font-body: Aptos, "SF Pro Text", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
   margin: 0;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(247, 247, 242, 0.94)),
-    linear-gradient(120deg, rgba(15, 118, 110, 0.08), transparent 36%, rgba(180, 83, 9, 0.07)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(248, 247, 242, 0.96)),
+    linear-gradient(120deg, rgba(20, 116, 106, 0.06), transparent 42%, rgba(161, 98, 7, 0.05)),
     var(--bg);
   color: var(--text);
+  font-family: var(--font-body);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  letter-spacing: 0;
 }
 
 * {
@@ -27,4 +31,32 @@ body {
 
 ::selection {
   background: rgba(15, 118, 110, 0.18);
+}
+
+@layer utilities {
+  .soft-surface {
+    border: 1px solid var(--hairline);
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 20px 70px rgba(39, 39, 42, 0.08);
+    backdrop-filter: blur(20px);
+  }
+
+  .hairline {
+    border-color: var(--hairline);
+  }
+
+  .fade-in-up {
+    animation: fade-in-up 520ms ease both;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

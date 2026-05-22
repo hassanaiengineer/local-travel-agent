@@ -22,7 +22,11 @@ export function SuggestedPrompts({
         <Button
           key={prompt}
           variant="outline"
-          className={compact ? "h-8 rounded-full px-3 text-[11px] font-normal" : "rounded-full text-xs font-normal"}
+          className={
+            compact
+              ? "h-8 border-zinc-200/70 bg-white/54 px-3 text-[11px] font-normal text-zinc-600 shadow-none hover:bg-white hover:text-zinc-900"
+              : "text-xs font-normal"
+          }
           onClick={() => onSelect(prompt)}
         >
           {prompt}
