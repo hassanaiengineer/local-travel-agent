@@ -1,12 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-
 const PROMPTS = [
   "Lahore to Multan tomorrow",
-  "Cheapest bus from Lahore to Islamabad tomorrow morning",
+  "Cheapest bus Lahore → Islamabad",
   "Morning buses from Lahore to Karachi",
-  "kal Lahore se Multan ki sasti bus chahiye",
+  "kal Lahore se Multan ki sasti bus",
 ];
 
 export function SuggestedPrompts({
@@ -19,18 +17,18 @@ export function SuggestedPrompts({
   return (
     <div className="flex flex-wrap gap-2">
       {PROMPTS.map((prompt) => (
-        <Button
+        <button
           key={prompt}
-          variant="outline"
+          type="button"
+          onClick={() => onSelect(prompt)}
           className={
             compact
-              ? "h-8 border-zinc-200/70 bg-white/54 px-3 text-[11px] font-normal text-zinc-600 shadow-none hover:bg-white hover:text-zinc-900"
-              : "text-xs font-normal"
+              ? "rounded-full border border-gray-200 bg-white/80 px-3 py-1.5 text-[11px] font-medium text-gray-500 shadow-sm transition-all duration-150 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700"
+              : "rounded-full border border-gray-200 bg-white px-3.5 py-2 text-[12px] font-medium text-gray-600 shadow-sm transition-all duration-150 hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-700"
           }
-          onClick={() => onSelect(prompt)}
         >
           {prompt}
-        </Button>
+        </button>
       ))}
     </div>
   );

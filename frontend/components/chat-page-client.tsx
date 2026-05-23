@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { Bot, BusFront, MapPin, Sparkles } from "lucide-react";
+import { Bot, BusFront, MapPin, Sparkles, Zap } from "lucide-react";
 
 import { BusCard } from "@/components/bus-card";
 import { ChatInput } from "@/components/chat-input";
@@ -26,26 +26,36 @@ export function ChatPageClient() {
   }, []);
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-2.5 py-2.5 text-zinc-800 md:px-5 md:py-4">
-      <header className="mb-2.5 flex items-center justify-between rounded-[22px] border border-zinc-200/60 bg-white/60 px-3.5 py-2.5 shadow-sm backdrop-blur-xl md:px-4">
+    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-2.5 py-2.5 md:px-5 md:py-4">
+      {/* Header */}
+      <header className="mb-2.5 flex items-center justify-between rounded-2xl border border-white/90 bg-white/80 px-4 py-3 shadow-sm backdrop-blur-xl">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-900 text-white">
-            <BusFront className="h-3.5 w-3.5" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/25">
+            <BusFront className="h-4 w-4" />
           </div>
           <div>
-            <p className="text-[13px] font-normal text-zinc-900">Safar AI</p>
-            <p className="text-[11px] font-normal text-zinc-500">Chalo ghar chalayin</p>
+            <p className="text-[14px] font-semibold text-gray-900">Safar AI</p>
+            <p className="text-[11px] text-gray-500">Chalo ghar chalayin</p>
           </div>
         </div>
-        <div className="hidden items-center gap-1.5 rounded-full border border-emerald-900/10 bg-emerald-50/70 px-3 py-1.5 text-[11px] font-normal text-emerald-800 sm:flex">
-          <MapPin className="h-3.5 w-3.5" />
-          Pakistan routes
+        <div className="flex items-center gap-2.5">
+          {latestAssistant?.result && (
+            <div className="hidden items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-[11px] font-medium text-emerald-700 sm:flex">
+              <Zap className="h-3 w-3" />
+              {latestAssistant.result.options.length} results found
+            </div>
+          )}
+          <div className="hidden items-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-[11px] font-medium text-gray-500 sm:flex">
+            <MapPin className="h-3 w-3" />
+            Pakistan routes
+          </div>
         </div>
       </header>
 
-      <section className="grid flex-1 gap-2.5 lg:grid-cols-[minmax(0,1fr)_376px]">
-        <div className="flex min-h-[62svh] flex-col overflow-hidden rounded-[24px] border border-zinc-200/60 bg-white/52 shadow-sm backdrop-blur-xl lg:min-h-[calc(100svh-98px)]">
-          <div className="border-b border-zinc-200/60 px-3 py-2.5 md:px-4">
+      <section className="grid flex-1 gap-2.5 lg:grid-cols-[minmax(0,1fr)_380px]">
+        {/* Chat panel */}
+        <div className="flex min-h-[62svh] flex-col overflow-hidden rounded-2xl border border-white/90 bg-white/70 shadow-sm backdrop-blur-xl lg:min-h-[calc(100svh-98px)]">
+          <div className="border-b border-gray-100 px-3 py-2.5 md:px-4">
             <SuggestedPrompts onSelect={sendMessage} compact />
           </div>
 
@@ -53,9 +63,10 @@ export function ChatPageClient() {
             <ChatWindow messages={messages} loading={loading} />
             {latestAssistant?.result && <FollowUpChips onSelect={sendMessage} />}
             {error && (
-              <p className="mt-3 rounded-2xl border border-amber-200/70 bg-amber-50/80 px-3 py-2 text-[12px] leading-5 text-amber-800">
-                {error}
-              </p>
+              <div className="mt-3 flex items-start gap-2.5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
+                <span className="mt-0.5 h-2 w-2 shrink-0 rounded-full bg-amber-400" />
+                <p className="text-[12px] leading-5 text-amber-800">{error}</p>
+              </div>
             )}
           </div>
 
@@ -64,18 +75,19 @@ export function ChatPageClient() {
           </div>
         </div>
 
-        <aside className="overflow-hidden rounded-[24px] border border-zinc-200/60 bg-white/62 shadow-sm backdrop-blur-xl lg:sticky lg:top-4 lg:h-[calc(100svh-32px)]">
-          <div className="border-b border-zinc-200/60 px-3.5 py-3">
+        {/* Results sidebar */}
+        <aside className="overflow-hidden rounded-2xl border border-white/90 bg-white/70 shadow-sm backdrop-blur-xl lg:sticky lg:top-4 lg:h-[calc(100svh-32px)]">
+          <div className="border-b border-gray-100 px-4 py-3.5">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-[13px] font-normal text-zinc-900">Bus options</h2>
-                <p className="text-[11px] font-normal text-zinc-500">
+                <h2 className="text-[13px] font-semibold text-gray-900">Bus options</h2>
+                <p className="mt-0.5 text-[11px] text-gray-400">
                   {latestAssistant?.result
                     ? `${latestAssistant.result.options.length} live results`
                     : "Live options appear here"}
                 </p>
               </div>
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-900 text-white">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/25">
                 <Sparkles className="h-3.5 w-3.5" />
               </div>
             </div>
@@ -83,40 +95,46 @@ export function ChatPageClient() {
 
           <div className="h-[38svh] space-y-2 overflow-y-auto p-2.5 lg:h-[calc(100%-65px)]">
             {loading && !latestAssistant?.result && <LoadingSkeleton />}
+
             {!latestAssistant?.result && !loading && (
-              <div className="h-full rounded-2xl border border-dashed border-zinc-200/80 bg-white/50 p-4">
+              <div className="h-full rounded-2xl border border-dashed border-gray-200 bg-gray-50/50 p-5">
                 <div className="flex h-full flex-col justify-between">
                   <div>
-                    <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-full bg-zinc-100 text-zinc-500">
-                      <Bot className="h-4 w-4" />
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-gray-400">
+                      <Bot className="h-5 w-5" />
                     </div>
-                    <p className="text-[13px] font-medium text-zinc-900">Your options will appear here</p>
-                    <p className="mt-1 text-[12px] font-normal leading-5 text-zinc-600">
-                      Compare departure times, duration, fare, and AI recommendation in one place.
+                    <p className="text-[13px] font-semibold text-gray-800">Your options will appear here</p>
+                    <p className="mt-1.5 text-[12px] leading-5 text-gray-500">
+                      Compare departure times, duration, fare, and AI recommendations in one place.
                     </p>
                   </div>
-
                   <div className="mt-5 space-y-2">
-                    {["Best value", "Cheapest fare", "Fastest route"].map((item) => (
-                      <div key={item} className="flex items-center justify-between rounded-xl bg-white/80 px-3 py-2 text-[12px] text-zinc-600">
-                        <span>{item}</span>
-                        <span className="h-1.5 w-10 rounded-full bg-zinc-200" />
+                    {[
+                      { label: "Best value", color: "bg-amber-100 text-amber-600" },
+                      { label: "Cheapest fare", color: "bg-emerald-100 text-emerald-600" },
+                      { label: "Fastest route", color: "bg-blue-100 text-blue-600" },
+                    ].map(({ label, color }) => (
+                      <div key={label} className="flex items-center justify-between rounded-xl border border-gray-100 bg-white px-3 py-2.5">
+                        <span className="text-[12px] font-medium text-gray-700">{label}</span>
+                        <span className={`h-1.5 w-12 rounded-full ${color.split(" ")[0]}`} />
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
             )}
+
             {loading && latestAssistant?.result && (
-              <div className="rounded-2xl border border-zinc-200/70 bg-white/70 p-4">
-                <div className="flex items-center gap-3 text-[12px] text-zinc-500">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-100 text-zinc-500">
-                    <Bot className="h-4 w-4" />
+              <div className="rounded-2xl border border-gray-100 bg-white p-4">
+                <div className="flex items-center gap-3 text-[12px] text-gray-400">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                    <Zap className="h-4 w-4" />
                   </div>
-                  Updating live options...
+                  Refreshing live options…
                 </div>
               </div>
             )}
+
             {latestAssistant?.result?.options?.slice(0, 40).map((option, index) => (
               <BusCard
                 key={`${option.option_id}-${index}`}

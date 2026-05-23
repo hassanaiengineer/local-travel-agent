@@ -30,8 +30,8 @@ async def health_check() -> HealthResponse:
 @router.post("/search", response_model=SearchResponse)
 async def search_route(payload: SearchRequest) -> SearchResponse:
     try:
-        if payload.query:
-            return await search_service.run_search(payload.query)
+        if payload.query and payload.query.strip():
+            return await search_service.run_search(payload.query.strip())
 
         if not payload.origin or not payload.destination:
             raise HTTPException(status_code=400, detail="Provide either query or origin+destination")
@@ -66,6 +66,8 @@ async def _chat_event_stream(query: str) -> AsyncGenerator[str, None]:
         summary = result.recommendation.summary
 
         for token in summary.split(" "):
+            if not token:
+                continue
             yield f"event: token\ndata: {json.dumps({'text': token + ' '})}\n\n"
             await asyncio.sleep(0.015)
 
@@ -74,6 +76,8 @@ async def _chat_event_stream(query: str) -> AsyncGenerator[str, None]:
         message = user_friendly_error(str(exc))
         logger.info("Streaming chat needs clarification: %s", message)
         for token in message.split(" "):
+            if not token:
+                continue
             yield f"event: token\ndata: {json.dumps({'text': token + ' '})}\n\n"
             await asyncio.sleep(0.015)
         yield f"event: error\ndata: {json.dumps({'error': message})}\n\n"
@@ -84,11 +88,14 @@ async def _chat_event_stream(query: str) -> AsyncGenerator[str, None]:
 
 @router.post("/chat")
 async def chat_route(payload: ChatRequest):
+    if not payload.query or not payload.query.strip():
+        raise HTTPException(status_code=400, detail="Query cannot be empty")
+
     if payload.stream:
-        return StreamingResponse(_chat_event_stream(payload.query), media_type="text/event-stream")
+        return StreamingResponse(_chat_event_stream(payload.query.strip()), media_type="text/event-stream")
 
     try:
-        response = await agent.handle_query(payload.query)
+        response = await agent.handle_query(payload.query.strip())
         return response
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=user_friendly_error(str(exc))) from exc

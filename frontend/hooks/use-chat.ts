@@ -28,6 +28,7 @@ export function useChat(initialQuery?: string) {
   };
 
   const sendMessage = async (query: string) => {
+    if (loading) return;
     const backendQuery = buildBackendQuery(query);
     const userMsg: ChatMessage = {
       id: crypto.randomUUID(),
