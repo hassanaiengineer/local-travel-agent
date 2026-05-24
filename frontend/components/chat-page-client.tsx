@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { Bot, BusFront, MapPin, Sparkles, Zap } from "lucide-react";
 
@@ -16,6 +16,7 @@ export function ChatPageClient() {
   const params = useSearchParams();
   const queryParam = params.get("q") || undefined;
   const { messages, loading, error, sendMessage, latestAssistant } = useChat(queryParam);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (queryParam) {
@@ -25,41 +26,58 @@ export function ChatPageClient() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  }, [messages, loading]);
+
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-2.5 py-2.5 md:px-5 md:py-4">
+    <main className="mx-auto flex h-[100svh] w-full max-w-6xl flex-col px-2.5 py-2.5 md:px-5 md:py-4">
       {/* Header */}
-      <header className="mb-2.5 flex items-center justify-between rounded-2xl border border-white/90 bg-white/80 px-4 py-3 shadow-sm backdrop-blur-xl">
+      <header className="mb-2.5 flex shrink-0 items-center justify-between rounded-2xl border border-white/90 bg-white/75 px-4 py-3 shadow-[0_2px_24px_rgba(15,23,42,0.04)] backdrop-blur-xl">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/25">
+          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 text-white shadow-[0_4px_16px_rgba(16,185,129,0.35)]">
             <BusFront className="h-4 w-4" />
+            <span className="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-white" />
+            </span>
           </div>
           <div>
-            <p className="text-[14px] font-semibold text-gray-900">Safar AI</p>
+            <p className="text-[14px] font-semibold tracking-tight text-gray-900">Safar AI</p>
             <p className="text-[11px] text-gray-500">Chalo ghar chalayin</p>
           </div>
         </div>
         <div className="flex items-center gap-2.5">
           {latestAssistant?.result && (
-            <div className="hidden items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-[11px] font-medium text-emerald-700 sm:flex">
+            <div className="hidden items-center gap-1.5 rounded-full border border-emerald-200/70 bg-gradient-to-r from-emerald-50 to-teal-50 px-3 py-1.5 text-[11px] font-medium text-emerald-700 shadow-sm sm:flex">
               <Zap className="h-3 w-3" />
               {latestAssistant.result.options.length} results found
             </div>
           )}
-          <div className="hidden items-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-[11px] font-medium text-gray-500 sm:flex">
+          <div className="hidden items-center gap-1.5 rounded-full border border-gray-200/80 bg-white/60 px-3 py-1.5 text-[11px] font-medium text-gray-500 sm:flex">
             <MapPin className="h-3 w-3" />
             Pakistan routes
           </div>
         </div>
       </header>
 
-      <section className="grid flex-1 gap-2.5 lg:grid-cols-[minmax(0,1fr)_380px]">
+      <section className="grid min-h-0 flex-1 gap-2.5 lg:grid-cols-[minmax(0,1fr)_380px]">
         {/* Chat panel */}
-        <div className="flex min-h-[62svh] flex-col overflow-hidden rounded-2xl border border-white/90 bg-white/70 shadow-sm backdrop-blur-xl lg:min-h-[calc(100svh-98px)]">
-          <div className="border-b border-gray-100 px-3 py-2.5 md:px-4">
+        <div className="relative flex min-h-0 flex-col overflow-hidden rounded-2xl border border-white/90 bg-white/70 shadow-[0_8px_40px_rgba(15,23,42,0.05)] backdrop-blur-xl">
+          {/* Ambient gradient orb */}
+          <div className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-gradient-to-br from-emerald-200/40 to-teal-200/0 blur-3xl" />
+          <div className="pointer-events-none absolute -right-32 bottom-32 h-72 w-72 rounded-full bg-gradient-to-br from-cyan-100/30 to-emerald-100/0 blur-3xl" />
+
+          <div className="relative shrink-0 border-b border-gray-100/80 px-3 py-2.5 md:px-4">
             <SuggestedPrompts onSelect={sendMessage} compact />
           </div>
 
-          <div className="flex-1 overflow-y-auto px-3.5 py-4 md:px-5">
+          <div
+            ref={scrollRef}
+            className="chat-scroll relative min-h-0 flex-1 overflow-y-auto px-3.5 py-4 md:px-5"
+          >
             <ChatWindow messages={messages} loading={loading} />
             {latestAssistant?.result && <FollowUpChips onSelect={sendMessage} />}
             {error && (
@@ -70,30 +88,30 @@ export function ChatPageClient() {
             )}
           </div>
 
-          <div className="px-3 pb-3">
+          <div className="relative shrink-0 border-t border-gray-100/60 bg-gradient-to-b from-white/0 to-white/60 px-3 pb-3 pt-2.5 backdrop-blur-sm">
             <ChatInput onSubmit={sendMessage} loading={loading} />
           </div>
         </div>
 
         {/* Results sidebar */}
-        <aside className="overflow-hidden rounded-2xl border border-white/90 bg-white/70 shadow-sm backdrop-blur-xl lg:sticky lg:top-4 lg:h-[calc(100svh-32px)]">
-          <div className="border-b border-gray-100 px-4 py-3.5">
+        <aside className="flex min-h-0 flex-col overflow-hidden rounded-2xl border border-white/90 bg-white/70 shadow-[0_8px_40px_rgba(15,23,42,0.05)] backdrop-blur-xl">
+          <div className="shrink-0 border-b border-gray-100/80 px-4 py-3.5">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-[13px] font-semibold text-gray-900">Bus options</h2>
+                <h2 className="text-[13px] font-semibold tracking-tight text-gray-900">Bus options</h2>
                 <p className="mt-0.5 text-[11px] text-gray-400">
                   {latestAssistant?.result
                     ? `${latestAssistant.result.options.length} live results`
                     : "Live options appear here"}
                 </p>
               </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/25">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 text-white shadow-[0_4px_16px_rgba(16,185,129,0.35)]">
                 <Sparkles className="h-3.5 w-3.5" />
               </div>
             </div>
           </div>
 
-          <div className="h-[38svh] space-y-2 overflow-y-auto p-2.5 lg:h-[calc(100%-65px)]">
+          <div className="chat-scroll min-h-0 flex-1 space-y-2 overflow-y-auto p-2.5">
             {loading && !latestAssistant?.result && <LoadingSkeleton />}
 
             {!latestAssistant?.result && !loading && (
